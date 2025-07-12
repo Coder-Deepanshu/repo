@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Just For You ❤️</title>
   <style>
+    /* Base styles remain the same */
     body {
       margin: 0;
       padding: 0;
@@ -25,28 +26,63 @@
       background: rgba(255, 255, 255, 0.1);
       box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
       backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      transition: all 0.5s ease;
+    }
+
+    .container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(255, 105, 140, 0.4);
     }
 
     h1 {
       font-size: 3rem;
       margin-bottom: 20px;
       animation: glow 2s infinite alternate;
+      position: relative;
+      display: inline-block;
+    }
+
+    h1::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 3px;
+      bottom: -5px;
+      left: 0;
+      background: linear-gradient(90deg, transparent, #fff, transparent);
+      animation: pulse 3s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scaleX(0); }
+      50% { transform: scaleX(1); }
     }
 
     @keyframes glow {
       from { text-shadow: 0 0 10px #fff, 0 0 20px #ff9a9e; }
-      to { text-shadow: 0 0 20px #fff, 0 0 40px #ff6f91; }
+      to { text-shadow: 0 0 20px #fff, 0 0 40px #ff6f91, 0 0 60px #ff3c6f; }
     }
 
     p {
       font-size: 1.2rem;
       margin-bottom: 30px;
+      position: relative;
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .buttons {
       display: flex;
       justify-content: center;
       gap: 20px;
+      position: relative;
     }
 
     button {
@@ -56,21 +92,54 @@
       font-size: 1rem;
       cursor: pointer;
       transition: 0.3s ease;
+      font-weight: 600;
+      letter-spacing: 1px;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      z-index: -1;
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 0.4s ease;
+    }
+
+    button:hover::before {
+      transform: scaleX(1);
+      transform-origin: left;
     }
 
     #yesBtn {
       background-color: #ff6f91;
       color: white;
+      box-shadow: 0 5px 15px rgba(255, 111, 145, 0.4);
     }
 
     #yesBtn:hover {
       background-color: #ff3c6f;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(255, 60, 111, 0.6);
     }
 
     #noBtn {
       background-color: white;
       color: #ff6f91;
       position: absolute;
+      box-shadow: 0 5px 15px rgba(255, 255, 255, 0.4);
+    }
+
+    #noBtn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(255, 255, 255, 0.6);
     }
 
     canvas {
@@ -79,11 +148,66 @@
       left: 0;
       z-index: -1;
     }
+
+    /* New romantic elements */
+    .floating-hearts {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .floating-heart {
+      position: absolute;
+      font-size: 24px;
+      animation: float-up 15s linear infinite;
+      opacity: 0.7;
+    }
+
+    @keyframes float-up {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.7;
+      }
+      90% {
+        opacity: 0.7;
+      }
+      100% {
+        transform: translateY(-10vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .sparkle {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      background: white;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 10;
+      animation: sparkle 1s ease-out forwards;
+    }
+
+    @keyframes sparkle {
+      0% { transform: scale(0); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: scale(2); opacity: 0; }
+    }
   </style>
 </head>
 <body>
 
 <canvas id="heartCanvas"></canvas>
+
+<!-- Floating hearts background -->
+<div class="floating-hearts" id="floatingHearts"></div>
 
 <div class="container">
   <h1>Will You Be My Girlfriend? ❤️</h1>
@@ -99,7 +223,7 @@
 </audio>
 
 <script>
-  // Floating Heart Background
+  // Enhanced Floating Heart Background
   const canvas = document.getElementById('heartCanvas');
   const ctx = canvas.getContext('2d');
   canvas.width = window.innerWidth;
@@ -111,28 +235,35 @@
     constructor() {
       this.x = Math.random() * canvas.width;
       this.y = canvas.height + Math.random() * 100;
-      this.size = Math.random() * 5 + 5;
-      this.speed = Math.random() * 1 + 0.5;
-      this.opacity = Math.random();
+      this.size = Math.random() * 8 + 8;
+      this.speed = Math.random() * 1.5 + 0.5;
+      this.opacity = Math.random() * 0.7 + 0.3;
+      this.color = `hsl(${Math.random() * 30 + 330}, 100%, 70%)`;
+      this.rotation = Math.random() * Math.PI * 2;
+      this.rotationSpeed = Math.random() * 0.02 - 0.01;
     }
 
     draw() {
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rotation);
       ctx.globalAlpha = this.opacity;
       ctx.beginPath();
-      ctx.moveTo(this.x, this.y);
-      ctx.bezierCurveTo(this.x + this.size, this.y - this.size,
-                        this.x + this.size * 2, this.y + this.size,
-                        this.x, this.y + this.size * 2);
-      ctx.bezierCurveTo(this.x - this.size * 2, this.y + this.size,
-                        this.x - this.size, this.y - this.size,
-                        this.x, this.y);
-      ctx.fillStyle = '#ff4b91';
+      ctx.moveTo(0, 0);
+      ctx.bezierCurveTo(this.size, -this.size,
+                        this.size * 2, this.size,
+                        0, this.size * 2);
+      ctx.bezierCurveTo(-this.size * 2, this.size,
+                        -this.size, -this.size,
+                        0, 0);
+      ctx.fillStyle = this.color;
       ctx.fill();
-      ctx.globalAlpha = 1;
+      ctx.restore();
     }
 
     update() {
       this.y -= this.speed;
+      this.rotation += this.rotationSpeed;
       if (this.y < -20) {
         this.y = canvas.height + 20;
         this.x = Math.random() * canvas.width;
@@ -141,7 +272,7 @@
   }
 
   function initHearts() {
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 150; i++) {
       hearts.push(new Heart());
     }
   }
@@ -158,24 +289,90 @@
   initHearts();
   animateHearts();
 
-  // Button Logic
+  // Create floating heart emojis
+  function createFloatingHearts() {
+    const container = document.getElementById('floatingHearts');
+    const heart = document.createElement('div');
+    heart.className = 'floating-heart';
+    heart.innerHTML = ['💖', '💘', '💝', '💗', '💓'][Math.floor(Math.random() * 5)];
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+    heart.style.animationDuration = (Math.random() * 10 + 10) + 's';
+    container.appendChild(heart);
+    
+    setTimeout(() => {
+      heart.remove();
+    }, 15000);
+  }
+
+  setInterval(createFloatingHearts, 500);
+
+  // Button Logic with enhancements
   const noBtn = document.getElementById('noBtn');
+  const yesBtn = document.getElementById('yesBtn');
 
   noBtn.addEventListener('mouseover', () => {
     const x = Math.random() * (window.innerWidth - 100);
     const y = Math.random() * (window.innerHeight - 50);
     noBtn.style.left = x + 'px';
     noBtn.style.top = y + 'px';
+    
+    // Create sparkles when button moves
+    createSparkles(noBtn);
   });
 
-  document.getElementById('yesBtn').addEventListener('click', () => {
-    alert("Yaaay! 😍 Ab tum sirf meri ho 💘");
+  yesBtn.addEventListener('click', () => {
+    // Create celebration effect
+    for (let i = 0; i < 50; i++) {
+      setTimeout(() => {
+        createSparkles(yesBtn, true);
+      }, i * 50);
+    }
+    
+    // Romantic message with delay
+    setTimeout(() => {
+      alert("Yaaay! 😍\n\nAb tum sirf meri ho 💘\n\nI promise to make you the happiest girl in the world!");
+    }, 800);
   });
+
+  // Create sparkle effects
+  function createSparkles(element, isCelebration = false) {
+    const rect = element.getBoundingClientRect();
+    const x = rect.left + rect.width/2;
+    const y = rect.top + rect.height/2;
+    const count = isCelebration ? 20 : 5;
+    
+    for (let i = 0; i < count; i++) {
+      const sparkle = document.createElement('div');
+      sparkle.className = 'sparkle';
+      sparkle.style.left = (x + (Math.random() - 0.5) * 50) + 'px';
+      sparkle.style.top = (y + (Math.random() - 0.5) * 50) + 'px';
+      sparkle.style.animationDelay = (Math.random() * 0.5) + 's';
+      sparkle.style.background = `hsl(${Math.random() * 60 + 330}, 100%, 70%)`;
+      document.body.appendChild(sparkle);
+      
+      setTimeout(() => {
+        sparkle.remove();
+      }, 1000);
+    }
+  }
+
+  // Add initial sparkles to yes button
+  createSparkles(yesBtn);
 
   window.addEventListener('resize', () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
   });
+
+  // Make container gently pulse
+  setInterval(() => {
+    const container = document.querySelector('.container');
+    container.style.transform = 'scale(1.02)';
+    setTimeout(() => {
+      container.style.transform = 'scale(1)';
+    }, 1000);
+  }, 2000);
 </script>
 
 </body>
