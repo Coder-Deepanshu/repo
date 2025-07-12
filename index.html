@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For The Love of My Life</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@400;600&display=swap');
+        
+        :root {
+            --primary: #ff6b6b;
+            --secondary: #ff8e8e;
+            --dark: #c44569;
+            --light: #fff5f5;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--light);
+            overflow-x: hidden;
+            height: 100vh;
+            perspective: 1000px;
+        }
+        
+        .container {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            transform-style: preserve-3d;
+        }
+        
+        .bg-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .heart {
+            position: absolute;
+            opacity: 0;
+            animation: float 15s linear infinite;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        .envelope-wrapper {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            margin-bottom: 2rem;
+        }
+        
+        .envelope {
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            border-radius: 5px;
+            position: relative;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: all 0.5s ease;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+            z-index: 2;
+        }
+        
+        .envelope:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top: 100px solid var(--dark);
+            transform-origin: top;
+            transform: rotateX(0deg);
+            transition: all 0.5s ease;
+            z-index: 3;
+        }
+        
+        .envelope.open:before {
+            transform: rotateX(180deg);
+        }
+        
+        .letter {
+            position: absolute;
+            top: 0;
+            width: 90%;
+            height: 90%;
+            background: white;
+            border-radius: 5px;
+            padding: 1.5rem;
+            transition: all 0.5s ease;
+            z-index: 1;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            transform: translateY(0) scale(0.9);
+            opacity: 0;
+        }
+        
+        .envelope.open ~ .letter {
+            transform: translateY(-50px) scale(1);
+            opacity: 1;
+            z-index: 4;
+        }
+        
+        .letter-content {
+            opacity: 0;
+            transition: all 0.5s ease 0.5s;
+        }
+        
+        .envelope.open ~ .letter .letter-content {
+            opacity: 1;
+        }
+        
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            color: var(--dark);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        
+        .proposal {
+            margin-top: 2rem;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .proposal-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        button {
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .yes-btn {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+        
+        .no-btn {
+            background: #eee;
+            color: #666;
+        }
+        
+        .yes-btn:hover {
+            background: var(--dark);
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+        }
+        
+        .no-btn:hover {
+            background: #ddd;
+        }
+        
+        .hidden-message {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.5s ease;
+        }
+        
+        .hidden-message.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .hidden-message h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .hidden-message p {
+            font-size: 1.5rem;
+            max-width: 600px;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .close-btn {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 3rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-top: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .close-btn:hover {
+            transform: scale(1.05);
+            background: var(--dark);
+        }
+        
+        .fireworks {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 99;
+        }
+        
+        .romantic-quote {
+            position: fixed;
+            bottom: 2rem;
+            width: 100%;
+            text-align: center;
+            font-style: italic;
+            color: var(--dark);
+            opacity: 0.8;
+            font-size: 1.2rem;
+        }
+        
+        .instructions {
+            margin-top: 1rem;
+            font-style: italic;
+            color: var(--dark);
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-hearts" id="hearts-container"></div>
+    
+    <div class="container">
+        <div class="proposal">
+            <div class="proposal-text">Will you be mine forever?</div>
+            <div class="buttons">
+                <button class="yes-btn" id="yes-btn">YES! ❤️</button>
+                <button class="no-btn" id="no-btn">NO</button>
+            </div>
+            <div class="instructions">Open the love letter below to read my feelings</div>
+        </div>
+        
+        <div class="envelope-wrapper">
+            <div class="envelope" id="envelope">
+                <!-- Envelope content is now separate from the letter -->
+            </div>
+            <div class="letter" id="letter">
+                <div class="letter-content">
+                    <h1>My Dearest Love</h1>
+                    <p>From the moment I saw you, I knew you were special. Your smile lights up my world, your laughter is my favorite melody.</p>
+                    <p>Every day with you is a blessing I don't deserve. You've shown me what true love means - patient, kind, and unconditional.</p>
+                    <p>I promise to cherish you, to stand by you through all of life's adventures, and to love you more each day than I did the day before.</p>
+                    <p>Today, with my whole heart, I want to ask you...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="hidden-message" id="hidden-message">
+        <h2>My Heart Is Yours Forever!</h2>
+        <p>You've just made all my dreams come true. I promise this is just the beginning of our beautiful forever.</p>
+        <p>From this moment forward, I will spend every day showing you how much you mean to me.</p>
+        <p>Thank you for choosing me, for loving me, and for saying yes to our future together.</p>
+        <button class="close-btn" id="close-btn">Close This Moment But Not My Heart</button>
+    </div>
+    
+    <div class="romantic-quote" id="romantic-quote">
+        "In all the world, there is no heart for me like yours. In all the world, there is no love for you like mine." - Maya Angelou
+    </div>
+    
+    <canvas class="fireworks" id="fireworks"></canvas>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script>
+        // Create floating hearts
+        const heartsContainer = document.getElementById('hearts-container');
+        for (let i = 0; i < 50; i++) {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = 5 + Math.random() * 15 + 's';
+            heart.style.animationDelay = Math.random() * 5 + 's';
+            heart.style.fontSize = (1 + Math.random() * 2) + 'rem';
+            heartsContainer.appendChild(heart);
+        }
+        
+        // Envelope animation
+        const envelope = document.getElementById('envelope');
+        const letter = document.getElementById('letter');
+        
+        envelope.addEventListener('click', () => {
+            envelope.classList.add('open');
+            letter.classList.add('open');
+            
+            // Change romantic quote after opening
+            const quotes = [
+                "I love you not only for what you are, but for what I am when I am with you.",
+                "You're my today and all of my tomorrows.",
+                "I saw that you were perfect, and so I loved you. Then I saw that you were not perfect and I loved you even more.",
+                "If I know what love is, it is because of you.",
+                "I need you like a heart needs a beat."
+            ];
+            document.getElementById('romantic-quote').textContent = quotes[Math.floor(Math.random() * quotes.length)];
+        });
+        
+        // No button fun
+        const noBtn = document.getElementById('no-btn');
+        noBtn.addEventListener('mouseover', () => {
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 40) + 20;
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 40) + 20;
+            noBtn.style.position = 'absolute';
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
+            noBtn.textContent = ['Try again', 'Not an option', 'Click YES!', 'Seriously?', 'You know you want to'][Math.floor(Math.random() * 5)];
+        });
+        
+        // Yes button magic
+        const yesBtn = document.getElementById('yes-btn');
+        const hiddenMessage = document.getElementById('hidden-message');
+        const closeBtn = document.getElementById('close-btn');
+        
+        yesBtn.addEventListener('click', () => {
+            // Show hidden message
+            hiddenMessage.classList.add('show');
+            
+            // Create fireworks
+            startFireworks();
+            
+            // Heart explosion effect
+            gsap.to('.heart', {
+                scale: 2,
+                opacity: 0,
+                duration: 1,
+                stagger: 0.05,
+                ease: "power2.out"
+            });
+            
+            // Romantic quote change
+            document.getElementById('romantic-quote').textContent = "You've said YES! Now my life is complete. I love you more than words can express.";
+            
+            // Create temporary hearts animation
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.classList.add('heart');
+                    heart.innerHTML = '❤';
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.animationDuration = 3 + Math.random() * 5 + 's';
+                    heart.style.fontSize = (2 + Math.random() * 3) + 'rem';
+                    heart.style.color = `hsl(${Math.random() * 60 + 350}, 100%, 70%)`;
+                    document.body.appendChild(heart);
+                    
+                    // Remove heart after animation
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 8000);
+                }, i * 100);
+            }
+        });
+        
+        closeBtn.addEventListener('click', () => {
+            hiddenMessage.classList.remove('show');
+        });
+        
+        // Enhanced fireworks effect
+        function startFireworks() {
+            const canvas = document.getElementById('fireworks');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            const fireworks = [];
+            const particles = [];
+            
+            class Firework {
+                constructor() {
+                    this.reset();
+                    this.radius = 0.1;
+                }
+                
+                reset() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = canvas.height;
+                    this.targetY = Math.random() * canvas.height / 2;
+                    this.speed = 3 + Math.random() * 4;
+                    this.angle = Math.PI / 2 + (Math.random() - 0.5) * Math.PI / 3;
+                    this.velocity = {
+                        x: Math.sin(this.angle) * this.speed,
+                        y: -Math.cos(this.angle) * this.speed
+                    };
+                    this.brightness = Math.random() * 30 + 70;
+                    this.targetRadius = 2 + Math.random() * 3;
+                    this.exploded = false;
+                    this.color = `hsl(${Math.random() * 60 + 350}, 100%, ${this.brightness}%)`;
+                }
+                
+                update() {
+                    if (!this.exploded) {
+                        this.velocity.y += 0.02;
+                        this.x += this.velocity.x;
+                        this.y += this.velocity.y;
+                        
+                        if (this.radius < this.targetRadius) {
+                            this.radius += 0.1;
+                        }
+                        
+                        if (this.y <= this.targetY) {
+                            this.explode();
+                        }
+                    }
+                }
+                
+                explode() {
+                    this.exploded = true;
+                    
+                    const particleCount = 150 + Math.floor(Math.random() * 100);
+                    const power = 12 + Math.random() * 5;
+                    
+                    for (let i = 0; i < particleCount; i++) {
+                        const angle = Math.random() * Math.PI * 2;
+                        const velocity = Math.random() * power;
+                        
+                        particles.push({
+                            x: this.x,
+                            y: this.y,
+                            velocity: {
+                                x: Math.cos(angle) * velocity,
+                                y: Math.sin(angle) * velocity
+                            },
+                            alpha: 1,
+                            color: this.color,
+                            radius: Math.random() * 3 + 1,
+                            gravity: 0.05 + Math.random() * 0.03
+                        });
+                    }
+                    
+                    // Reset for reuse
+                    setTimeout(() => this.reset(), 1000 + Math.random() * 2000);
+                }
+                
+                draw() {
+                    if (!this.exploded) {
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = this.color;
+                        ctx.fill();
+                        
+                        // Add glow effect
+                        ctx.shadowBlur = 15;
+                        ctx.shadowColor = this.color;
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                    }
+                }
+            }
+            
+            class Particle {
+                constructor(x, y, velocity, color, radius, gravity) {
+                    this.x = x;
+                    this.y = y;
+                    this.velocity = velocity;
+                    this.alpha = 1;
+                    this.color = color;
+                    this.radius = radius;
+                    this.gravity = gravity;
+                }
+                
+                update() {
+                    this.velocity.y += this.gravity;
+                    this.x += this.velocity.x;
+                    this.y += this.velocity.y;
+                    this.alpha -= 0.008;
+                }
+                
+                draw() {
+                    ctx.globalAlpha = this.alpha;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    
+                    // Add glow to particles
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = this.color;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    
+                    ctx.globalAlpha = 1;
+                }
+            }
+            
+            // Create initial fireworks
+            for (let i = 0; i < 5; i++) {
+                fireworks.push(new Firework());
+                fireworks[i].y = Math.random() * canvas.height / 2;
+                fireworks[i].targetY = Math.random() * canvas.height / 4;
+            }
+            
+            function loop() {
+                requestAnimationFrame(loop);
+                
+                // Clear with semi-transparent background for trail effect
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Add new fireworks randomly
+                if (Math.random() < 0.1) {
+                    fireworks.push(new Firework());
+                }
+                
+                // Update and draw fireworks
+                for (let i = 0; i < fireworks.length; i++) {
+                    fireworks[i].update();
+                    fireworks[i].draw();
+                }
+                
+                // Update and draw particles
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update();
+                    particles[i].draw();
+                    
+                    if (particles[i].alpha <= 0) {
+                        particles.splice(i, 1);
+                        i--;
+                    }
+                }
+            }
+            
+            loop();
+        }
+        
+        // Make sure the fireworks canvas resizes with window
+        window.addEventListener('resize', () => {
+            const canvas = document.getElementById('fireworks');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+        
+        // Initial romantic quotes rotation
+        const romanticQuotes = [
+            "I love you not only for what you are, but for what I am when I am with you.",
+            "You're my today and all of my tomorrows.",
+            "I saw that you were perfect, and so I loved you. Then I saw that you were not perfect and I loved you even more.",
+            "If I know what love is, it is because of you.",
+            "I need you like a heart needs a beat.",
+            "My love for you is a journey starting at forever and ending at never.",
+            "You are my heart, my life, my one and only thought.",
+            "I would rather spend one lifetime with you, than face all the ages of this world alone."
+        ];
+        
+        let quoteIndex = 0;
+        setInterval(() => {
+            if (!document.getElementById('envelope').classList.contains('open')) {
+                quoteIndex = (quoteIndex + 1) % romanticQuotes.length;
+                document.getElementById('romantic-quote').textContent = romanticQuotes[quoteIndex];
+            }
+        }, 5000);
+    </script>
+</body>
+</html>
