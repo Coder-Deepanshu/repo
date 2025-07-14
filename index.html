@@ -1,379 +1,419 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Just For You ❤️</title>
-  <style>
-    /* Base styles remain the same */
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Celebration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #e63946;
+            --secondary-color: #457b9d;
+            --accent-color: #a8dadc;
+            --text-color: #2b2d42;
+            --light-bg: #f1faee;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
 
-    .container {
-      text-align: center;
-      color: #fff;
-      padding: 40px;
-      border-radius: 20px;
-      background: rgba(255, 255, 255, 0.1);
-      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-      backdrop-filter: blur(10px);
-      position: relative;
-      overflow: hidden;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      transition: all 0.5s ease;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    .container:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 40px rgba(255, 105, 140, 0.4);
-    }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--light-bg), var(--accent-color));
+            color: var(--text-color);
+            overflow: hidden;
+            line-height: 1.6;
+            position: relative;
+        }
 
-    h1 {
-      font-size: 3rem;
-      margin-bottom: 20px;
-      animation: glow 2s infinite alternate;
-      position: relative;
-      display: inline-block;
-    }
+        .container {
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            max-width: 560px;
+            width: 90%;
+            margin: 2rem auto;
+            transform: scale(0.98);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            z-index: 10;
+        }
 
-    h1::after {
-      content: '';
-      position: absolute;
-      width: 100%;
-      height: 3px;
-      bottom: -5px;
-      left: 0;
-      background: linear-gradient(90deg, transparent, #fff, transparent);
-      animation: pulse 3s infinite;
-    }
+        .container:hover {
+            transform: scale(1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
 
-    @keyframes pulse {
-      0%, 100% { transform: scaleX(0); }
-      50% { transform: scaleX(1); }
-    }
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
 
-    @keyframes glow {
-      from { text-shadow: 0 0 10px #fff, 0 0 20px #ff9a9e; }
-      to { text-shadow: 0 0 20px #fff, 0 0 40px #ff6f91, 0 0 60px #ff3c6f; }
-    }
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
 
-    p {
-      font-size: 1.2rem;
-      margin-bottom: 30px;
-      position: relative;
-      animation: fadeIn 2s ease-in-out;
-    }
+        h2 {
+            color: var(--secondary-color);
+            margin-bottom: 1.25rem;
+            font-size: 1.8rem;
+        }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+        p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            color: var(--text-color);
+        }
 
-    .buttons {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      position: relative;
-    }
+        .input-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
 
-    button {
-      padding: 15px 30px;
-      border: none;
-      border-radius: 30px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: 0.3s ease;
-      font-weight: 600;
-      letter-spacing: 1px;
-      position: relative;
-      overflow: hidden;
-      z-index: 1;
-    }
+        input[type="text"] {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background-color: #f8f9fa;
+            margin-bottom: 1rem;
+        }
 
-    button::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.2);
-      z-index: -1;
-      transform: scaleX(0);
-      transform-origin: right;
-      transition: transform 0.4s ease;
-    }
+        input[type="text"]:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.2);
+        }
 
-    button:hover::before {
-      transform: scaleX(1);
-      transform-origin: left;
-    }
+        .btn {
+            background: linear-gradient(45deg, var(--primary-color), #f72585);
+            color: white;
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-block;
+            margin: 0.5rem;
+        }
 
-    #yesBtn {
-      background-color: #ff6f91;
-      color: white;
-      box-shadow: 0 5px 15px rgba(255, 111, 145, 0.4);
-    }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(230, 57, 70, 0.5);
+        }
 
-    #yesBtn:hover {
-      background-color: #ff3c6f;
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(255, 60, 111, 0.6);
-    }
+        .btn:active {
+            transform: translateY(1px);
+        }
 
-    #noBtn {
-      background-color: white;
-      color: #ff6f91;
-      position: absolute;
-      box-shadow: 0 5px 15px rgba(255, 255, 255, 0.4);
-    }
+        .btn-secondary {
+            background: linear-gradient(45deg, var(--secondary-color), #4895ef);
+            box-shadow: 0 4px 15px rgba(69, 123, 157, 0.4);
+        }
 
-    #noBtn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(255, 255, 255, 0.6);
-    }
+        .btn-secondary:hover {
+            box-shadow: 0 6px 20px rgba(69, 123, 157, 0.5);
+        }
 
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: -1;
-    }
+        .hidden {
+            display: none;
+        }
 
-    /* New romantic elements */
-    .floating-hearts {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: -1;
-    }
+        .card {
+            background-color: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 1s ease-in-out;
+        }
 
-    .floating-heart {
-      position: absolute;
-      font-size: 24px;
-      animation: float-up 15s linear infinite;
-      opacity: 0.7;
-    }
+        .profile-photo-container {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
 
-    @keyframes float-up {
-      0% {
-        transform: translateY(100vh) rotate(0deg);
-        opacity: 0;
-      }
-      10% {
-        opacity: 0.7;
-      }
-      90% {
-        opacity: 0.7;
-      }
-      100% {
-        transform: translateY(-10vh) rotate(360deg);
-        opacity: 0;
-      }
-    }
+        .profile-photo {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 6px solid white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
 
-    .sparkle {
-      position: absolute;
-      width: 5px;
-      height: 5px;
-      background: white;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 10;
-      animation: sparkle 1s ease-out forwards;
-    }
+        .profile-photo:hover {
+            transform: scale(1.05);
+        }
 
-    @keyframes sparkle {
-      0% { transform: scale(0); opacity: 0; }
-      50% { opacity: 1; }
-      100% { transform: scale(2); opacity: 0; }
-    }
-  </style>
+        .upload-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: var(--transition);
+        }
+
+        .upload-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .upload-btn i {
+            font-size: 1.2rem;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .heart {
+            position: absolute;
+            pointer-events: none;
+            z-index: 1;
+            animation: falling linear forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes falling {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.75rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .profile-photo {
+                width: 140px;
+                height: 140px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .btn {
+                padding: 0.65rem 1.5rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+    <div class="container welcome-container" id="welcomePage">
+        <h1>A Heartfelt Celebration</h1>
+        <p>To begin this special birthday journey, please enter the name of the amazing person we're celebrating today:</p>
+        <div class="input-group">
+            <input type="text" id="sisterName" placeholder="Enter name here" aria-label="Birthday person's name">
+        </div>
+        <button class="btn" onclick="startWishes()">Begin Celebration</button>
+    </div>
 
-<canvas id="heartCanvas"></canvas>
+    <div class="container birthday-container hidden" id="page1">
+        <h1 id="greetingText"></h1>
+        <p>Today is all about you! May your birthday be filled with joy, laughter, and wonderful moments that create lasting memories.</p>
+        <button class="btn" onclick="nextPage()">Continue</button>
+    </div>
 
-<!-- Floating hearts background -->
-<div class="floating-hearts" id="floatingHearts"></div>
+    <div class="container birthday-container hidden" id="page2">
+        <h2>Wishing You Abundance</h2>
+        <p>May this new chapter of your life bring you closer to your dreams, surrounded by love, success, and happiness in all that you do.</p>
+        <button class="btn" onclick="nextPage()">More Wishes</button>
+    </div>
 
-<div class="container">
-  <h1>Will You Be My Girlfriend? ❤️</h1>
-  <p>Tumhari muskurahat meri duniya hai. Kya tum meri zindagi banogi?</p>
-  <div class="buttons">
-    <button id="yesBtn">Yes 💖</button>
-    <button id="noBtn">No 🙈</button>
-  </div>
-</div>
+    <div class="container birthday-container hidden" id="page3">
+        <h2>You're Incredible</h2>
+        <p>The world is brighter with you in it. Your kindness, strength, and beautiful spirit inspire everyone around you.</p>
+        <button class="btn" onclick="nextPage()">Final Wish</button>
+    </div>
 
-<audio autoplay loop>
-  <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg" />
-</audio>
+    <div class="container birthday-container hidden" id="page4" style="margin-bottom: 420px;">
+        <div class="card">
+            <div class="profile-photo-container">
+                <img id="profileImage" src="https://via.placeholder.com/180" alt="Birthday Person" class="profile-photo">
+                <label class="upload-btn" for="fileInput">
+                    <i class="fas fa-camera"></i>
+                </label>
+                <input type="file" id="fileInput" accept="image/*">
+            </div>
+            <h1>Happy Birthday, <span id="finalName"></span>!</h1>
+            <p>May your special day be as wonderful and extraordinary as you are. Sending you endless love and the warmest wishes on your birthday and always!</p>
+            <div>
+                <button class="btn" onclick="createHearts('small', true)">Small Hearts</button>
+                <button class="btn btn-secondary" onclick="createHearts('big', true)">Big Hearts</button>
+            </div>
+        </div>
+    </div>
 
-<script>
-  // Enhanced Floating Heart Background
-  const canvas = document.getElementById('heartCanvas');
-  const ctx = canvas.getContext('2d');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+    <script>
+        let currentPage = 0;
+        let sisterName = "";
 
-  const hearts = [];
+        // Profile photo: load from localStorage if exists
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load photo from localStorage
+            const savedPhoto = localStorage.getItem('profilePhoto');
+            if (savedPhoto) {
+                document.getElementById('profileImage').src = savedPhoto;
+            }
 
-  class Heart {
-    constructor() {
-      this.x = Math.random() * canvas.width;
-      this.y = canvas.height + Math.random() * 100;
-      this.size = Math.random() * 8 + 8;
-      this.speed = Math.random() * 1.5 + 0.5;
-      this.opacity = Math.random() * 0.7 + 0.3;
-      this.color = `hsl(${Math.random() * 30 + 330}, 100%, 70%)`;
-      this.rotation = Math.random() * Math.PI * 2;
-      this.rotationSpeed = Math.random() * 0.02 - 0.01;
-    }
+            // Set up file upload
+            const fileInput = document.getElementById('fileInput');
+            fileInput.addEventListener('change', function(e) {
+                if (e.target.files && e.target.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        document.getElementById('profileImage').src = event.target.result;
+                        // Save photo to localStorage
+                        localStorage.setItem('profilePhoto', event.target.result);
+                    };
+                    reader.readAsDataURL(e.target.files[0]);
+                }
+            });
 
-    draw() {
-      ctx.save();
-      ctx.translate(this.x, this.y);
-      ctx.rotate(this.rotation);
-      ctx.globalAlpha = this.opacity;
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.bezierCurveTo(this.size, -this.size,
-                        this.size * 2, this.size,
-                        0, this.size * 2);
-      ctx.bezierCurveTo(-this.size * 2, this.size,
-                        -this.size, -this.size,
-                        0, 0);
-      ctx.fillStyle = this.color;
-      ctx.fill();
-      ctx.restore();
-    }
+            // Start some hearts automatically
+            setInterval(() => {
+                createHearts(Math.random() > 0.5 ? 'small' : 'big');
+            }, 800);
+        });
 
-    update() {
-      this.y -= this.speed;
-      this.rotation += this.rotationSpeed;
-      if (this.y < -20) {
-        this.y = canvas.height + 20;
-        this.x = Math.random() * canvas.width;
-      }
-    }
-  }
+        function startWishes() {
+            const nameInput = document.getElementById('sisterName');
+            sisterName = nameInput.value.trim();
 
-  function initHearts() {
-    for (let i = 0; i < 150; i++) {
-      hearts.push(new Heart());
-    }
-  }
+            if (sisterName) {
+                document.getElementById('welcomePage').classList.add('hidden');
+                document.getElementById('greetingText').textContent = `Happy Birthday, ${sisterName}!`;
+                document.getElementById('finalName').textContent = sisterName;
+                currentPage = 1;
+                document.getElementById(`page${currentPage}`).classList.remove('hidden');
+                createHearts('big', true);
+            } else {
+                alert('Please enter a name to continue this special celebration!');
+                nameInput.focus();
+            }
+        }
 
-  function animateHearts() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    hearts.forEach(heart => {
-      heart.update();
-      heart.draw();
-    });
-    requestAnimationFrame(animateHearts);
-  }
+        function nextPage() {
+            document.getElementById(`page${currentPage}`).classList.add('hidden');
+            currentPage++;
 
-  initHearts();
-  animateHearts();
+            if (currentPage <= 4) {
+                document.getElementById(`page${currentPage}`).classList.remove('hidden');
+                if (currentPage === 4) {
+                    createHearts('big', true);
+                }
+            }
+        }
 
-  // Create floating heart emojis
-  function createFloatingHearts() {
-    const container = document.getElementById('floatingHearts');
-    const heart = document.createElement('div');
-    heart.className = 'floating-heart';
-    heart.innerHTML = ['💖', '💘', '💝', '💗', '💓'][Math.floor(Math.random() * 5)];
-    heart.style.left = Math.random() * 100 + 'vw';
-    heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
-    heart.style.animationDuration = (Math.random() * 10 + 10) + 's';
-    container.appendChild(heart);
-    
-    setTimeout(() => {
-      heart.remove();
-    }, 15000);
-  }
+        // Heart barish function: instant barish on button click
+        function createHearts(size, instant = false) {
+            const heartSizes = {
+                small: { min: 10, max: 20 },
+                big: { min: 30, max: 50 }
+            };
+            const colors = ['#e63946', '#ff006e', '#ff5e8a', '#ff85a1', '#f72585', '#b5179e'];
+            const heartCount = size === 'small' ? 25 : 12; // Button click par zyada hearts
 
-  setInterval(createFloatingHearts, 500);
+            for (let i = 0; i < heartCount; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '❤️';
 
-  // Button Logic with enhancements
-  const noBtn = document.getElementById('noBtn');
-  const yesBtn = document.getElementById('yesBtn');
+                // Set random size
+                const sizeRange = heartSizes[size];
+                const fontSize = Math.random() * (sizeRange.max - sizeRange.min) + sizeRange.min;
+                heart.style.fontSize = `${fontSize}px`;
 
-  noBtn.addEventListener('mouseover', () => {
-    const x = Math.random() * (window.innerWidth - 100);
-    const y = Math.random() * (window.innerHeight - 50);
-    noBtn.style.left = x + 'px';
-    noBtn.style.top = y + 'px';
-    
-    // Create sparkles when button moves
-    createSparkles(noBtn);
-  });
+                // Set random position
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.top = -50 + 'px';
 
-  yesBtn.addEventListener('click', () => {
-    // Create celebration effect
-    for (let i = 0; i < 50; i++) {
-      setTimeout(() => {
-        createSparkles(yesBtn, true);
-      }, i * 50);
-    }
-    
-    // Romantic message with delay
-    setTimeout(() => {
-      alert("Yaaay! 😍\n\nAb tum sirf meri ho 💘\n\nI promise to make you the happiest girl in the world!");
-    }, 800);
-  });
+                // Set random color
+                heart.style.color = colors[Math.floor(Math.random() * colors.length)];
 
-  // Create sparkle effects
-  function createSparkles(element, isCelebration = false) {
-    const rect = element.getBoundingClientRect();
-    const x = rect.left + rect.width/2;
-    const y = rect.top + rect.height/2;
-    const count = isCelebration ? 20 : 5;
-    
-    for (let i = 0; i < count; i++) {
-      const sparkle = document.createElement('div');
-      sparkle.className = 'sparkle';
-      sparkle.style.left = (x + (Math.random() - 0.5) * 50) + 'px';
-      sparkle.style.top = (y + (Math.random() - 0.5) * 50) + 'px';
-      sparkle.style.animationDelay = (Math.random() * 0.5) + 's';
-      sparkle.style.background = `hsl(${Math.random() * 60 + 330}, 100%, 70%)`;
-      document.body.appendChild(sparkle);
-      
-      setTimeout(() => {
-        sparkle.remove();
-      }, 1000);
-    }
-  }
+                // Set random animation duration
+                const duration = instant ? (Math.random() * 2 + 2) : (Math.random() * 3 + 2);
+                heart.style.animationDuration = `${duration}s`;
 
-  // Add initial sparkles to yes button
-  createSparkles(yesBtn);
+                document.body.appendChild(heart);
 
-  window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  });
+                // Remove heart after animation
+                setTimeout(() => {
+                    heart.remove();
+                }, duration * 1000);
+            }
+        }
 
-  // Make container gently pulse
-  setInterval(() => {
-    const container = document.querySelector('.container');
-    container.style.transform = 'scale(1.02)';
-    setTimeout(() => {
-      container.style.transform = 'scale(1)';
-    }, 1000);
-  }, 2000);
-</script>
-
+        // Handle keyboard input
+        document.getElementById('sisterName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                startWishes();
+            }
+        });
+    </script>
 </body>
 </html>
