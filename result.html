@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Student Mark Sheet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        :root {
+            --primary: #1f4f7a;
+            --secondary: #e9edf2;
+            --border: #cfd6de;
+            --bg: #f4f6f8;
+            --text: #1f2937;
+        }
+
+        body {
+            margin: 0;
+            padding: 12px;
+            background: var(--bg);
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+            color: var(--text);
+        }
+
+        /* Card wrapper */
+        .table-wrap {
+            overflow-x: auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, .08);
+            border: 1px solid var(--border);
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            min-width: 1200px;
+            font-size: 12px;
+        }
+
+        th,
+        td {
+            border: 1px solid var(--border);
+            padding: 6px 8px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .left-align {
+            text-align: left;
+        }
+
+        /* Header styling */
+        thead th {
+            background: var(--secondary);
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+
+        .header-row th {
+            background: #dde5ee;
+            color: #111827;
+        }
+
+        /* Top information rows */
+        thead tr:nth-child(-n+4) th {
+            background: #f8fafc;
+            font-weight: 600;
+        }
+
+        /* Emphasis rows */
+        tbody tr:nth-last-child(3) td,
+        tbody tr:nth-last-child(2) td,
+        tbody tr:nth-last-child(1) td {
+            background: #f9fbfd;
+            font-weight: 600;
+        }
+
+        /* Result highlight */
+        tbody tr:last-child td {
+            background: #eef6ff;
+            color: #0f3d66;
+        }
+
+        /* Hover (desktop only feel) */
+        tbody tr:hover {
+            background: #f1f5f9;
+        }
+
+        /* Mobile tweaks */
+        @media(max-width:768px) {
+            body {
+                padding: 6px;
+            }
+
+            table {
+                font-size: 11px;
+            }
+
+            th,
+            td {
+                padding: 5px;
+            }
+        }
+
+        @media(max-width:480px) {
+            table {
+                font-size: 10px;
+            }
+        }
+
+        /* Print friendly */
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+            }
+
+            .table-wrap {
+                box-shadow: none;
+                border: none;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="table-wrap">
+        <table>
+            <!-- 🔒 CONTENT UNCHANGED (exact same as you provided) -->
+            <!-- thead -->
+            <thead>
+                <tr>
+                    <th colspan="2" class="left-align">PROGRAM NAME</th>
+                    <th colspan="12" class="left-align">BACHELORS OF SCIENCE IN PHYSICAL SCIENCES</th>
+                    <th colspan="3" class="left-align">EXAM SESSION</th>
+                    <th colspan="4" class="left-align">May 25</th>
+                    <th colspan="1" class="left-align">TERM-2</th>
+                </tr>
+                <tr>
+                    <th colspan="2" class="left-align">STUDENT NAME</th>
+                    <th colspan="12" class="left-align">JENIFER SAMUEL</th>
+                    <th colspan="3" class="left-align">STUDENT REGISTRATION NO.</th>
+                    <th colspan="4" class="left-align">24 GA 294</th>
+                    <th colspan="1"></th>
+                </tr>
+                <tr>
+                    <th colspan="2" class="left-align">STUDENT ROLL NO</th>
+                    <th colspan="12" class="left-align">2024178015</th>
+                    <th colspan="3" class="left-align">MOTHER'S NAME</th>
+                    <th colspan="4" class="left-align">EKTA SAMUEL</th>
+                    <th colspan="1"></th>
+                </tr>
+                <tr>
+                    <th colspan="2" class="left-align">FATHER'S NAME</th>
+                    <th colspan="12" class="left-align">JAVIER SAMUEL</th>
+                    <th colspan="3"></th>
+                    <th colspan="4"></th>
+                    <th colspan="1"></th>
+                </tr>
+                <tr class="header-row">
+                    <th rowspan="3" colspan="2">COURSE CODE</th>
+                    <th rowspan="3" colspan="10">COURSE NAME</th>
+                    <th rowspan="3">COURSE CREDIT</th>
+                    <th colspan="8">THEORY</th>
+                    <th colspan="6">PRACTICAL</th>
+                    <th rowspan="3">TOTAL MARKS (MO/MM)</th>
+                    <th rowspan="3">PERCENTAGE</th>
+                    <th rowspan="3">GRADE</th>
+                    <th rowspan="3">CREDIT POINTS</th>
+                    <th rowspan="3">RESULT</th>
+                </tr>
+                <tr class="header-row">
+                    <th colspan="4">EXTERNAL</th>
+                    <th colspan="4">INTERNAL</th>
+                    <th colspan="3">EXTERNAL</th>
+                    <th colspan="3">INTERNAL</th>
+                </tr>
+                <tr class="header-row">
+                    <th>MO</th>
+                    <th>MM</th>
+                    <th>MO</th>
+                    <th>MM</th>
+                    <th>MO</th>
+                    <th>MM</th>
+                    <th>MO</th>
+                    <th>MM</th>
+                    <th>MO</th>
+                    <th>MM</th>
+                    <th>MO</th>
+                    <th>MM</th>
+                    <th>MO</th>
+                    <th>MM</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td colspan="2" class="left-align">B-23-HIN-0721</td>
+                    <td colspan="10" class="left-align">HINDI BHASHA</td>
+                    <td>2</td>
+                    <td>28</td>
+                    <td>35</td>
+                    <td>15</td>
+                    <td>15</td>
+                    <td>0</td>
+                    <td>10</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>35/43</td>
+                    <td>80</td>
+                    <td>A+</td>
+                    <td>20</td>
+                    <td>P</td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="left-align">B-23-CHE-0810</td>
+                    <td colspan="10" class="left-align">MINOR CHEMISTRY</td>
+                    <td>7</td>
+                    <td>32</td>
+                    <td>40</td>
+                    <td>18</td>
+                    <td>20</td>
+                    <td>14</td>
+                    <td>15</td>
+                    <td>8</td>
+                    <td>15</td>
+                    <td>5</td>
+                    <td>8</td>
+                    <td>0</td>
+                    <td>10</td>
+                    <td>40/80</td>
+                    <td>80</td>
+                    <td>A+</td>
+                    <td>36</td>
+                    <td>P</td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="left-align">B-23-CSE-0911</td>
+                    <td colspan="10" class="left-align">WEB DEVELOPMENT</td>
+                    <td>4</td>
+                    <td>36</td>
+                    <td>50</td>
+                    <td>19</td>
+                    <td>20</td>
+                    <td>19</td>
+                    <td>20</td>
+                    <td>8</td>
+                    <td>20</td>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>10</td>
+                    <td>10</td>
+                    <td>85/85</td>
+                    <td>80</td>
+                    <td>A</td>
+                    <td>35</td>
+                    <td>P</td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="left-align">B-23-MAT-1011</td>
+                    <td colspan="10" class="left-align">ALGEBRA</td>
+                    <td>4</td>
+                    <td>36</td>
+                    <td>50</td>
+                    <td>19</td>
+                    <td>20</td>
+                    <td>20</td>
+                    <td>20</td>
+                    <td>8</td>
+                    <td>20</td>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>10</td>
+                    <td>10</td>
+                    <td>52/60</td>
+                    <td>90</td>
+                    <td>A+</td>
+                    <td>35</td>
+                    <td>P</td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="left-align">B-23-PHY-1111</td>
+                    <td colspan="10" class="left-align">EM WAVES</td>
+                    <td>4</td>
+                    <td>20</td>
+                    <td>20</td>
+                    <td>18</td>
+                    <td>20</td>
+                    <td>18</td>
+                    <td>20</td>
+                    <td>8</td>
+                    <td>20</td>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>10</td>
+                    <td>10</td>
+                    <td>50/60</td>
+                    <td>80</td>
+                    <td>A+</td>
+                    <td>35</td>
+                    <td>P</td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="left-align">B-23-POL-1213</td>
+                    <td colspan="10" class="left-align">INDIAN POLITY</td>
+                    <td>3</td>
+                    <td>28</td>
+                    <td>35</td>
+                    <td>25</td>
+                    <td>25</td>
+                    <td>0</td>
+                    <td>25</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>53/60</td>
+                    <td>80</td>
+                    <td>A</td>
+                    <td>24</td>
+                    <td>P</td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="left-align">B-23-SEC-1311</td>
+                    <td colspan="10" class="left-align">NUMERICAL ABILITY</td>
+                    <td>3</td>
+                    <td>20</td>
+                    <td>20</td>
+                    <td>14</td>
+                    <td>15</td>
+                    <td>13</td>
+                    <td>15</td>
+                    <td>19</td>
+                    <td>25</td>
+                    <td>0</td>
+                    <td>25</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>59/70</td>
+                    <td>70</td>
+                    <td>A</td>
+                    <td>27</td>
+                    <td>P</td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="left-align">B-23-VAC-1413</td>
+                    <td colspan="10" class="left-align">HUMAN VALUES</td>
+                    <td>2</td>
+                    <td>23</td>
+                    <td>25</td>
+                    <td>14</td>
+                    <td>15</td>
+                    <td>15</td>
+                    <td>15</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>30/40</td>
+                    <td>75</td>
+                    <td>A</td>
+                    <td>15</td>
+                    <td>P</td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="left-align">TOTAL</td>
+                    <td colspan="10"></td>
+                    <td>34</td>
+                    <td colspan="14"></td>
+                    <td>400</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="left-align">GRAND TOTAL 420/600</td>
+                    <td colspan="12" class="left-align">GRACE AVAILED........</td>
+                    <td colspan="4" class="left-align">EARNED GRACE POINTS 208/240</td>
+                    <td colspan="4">197</td>
+                    <td>P</td>
+                </tr>
+                <tr>
+                    <td colspan="16" class="left-align">RESULT STATUS PASS WITH SGPA 8.06</td>
+                    <td colspan="8" class="left-align">RESULT DECLARATION DATE 17/1/2020</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+
+</html>
