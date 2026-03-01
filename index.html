@@ -75,7 +75,7 @@
             pointer-events: none;
         }
 
-        .section {
+        section {
             position: relative;
             width: 100%;
             min-height: 100vh;
@@ -93,6 +93,7 @@
             pointer-events: none;
         }
 
+        /* Interactive Elements */
         .interactive {
             pointer-events: auto;
             cursor: pointer;
@@ -653,6 +654,8 @@
     <script>
         // ========== THREE.JS 3D BACKGROUND ==========
         const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x050510); // deep space
+        
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         
@@ -660,81 +663,133 @@
         renderer.setPixelRatio(window.devicePixelRatio);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-        // Create floating particles
-        const particlesGeometry = new THREE.BufferGeometry();
-        const particlesCount = 2000;
-        const posArray = new Float32Array(particlesCount * 3);
-        const colorArray = new Float32Array(particlesCount * 3);
-
-        for(let i = 0; i < particlesCount * 3; i += 3) {
-            // Positions
-            posArray[i] = (Math.random() - 0.5) * 50;
-            posArray[i+1] = (Math.random() - 0.5) * 50;
-            posArray[i+2] = (Math.random() - 0.5) * 50;
-
-            // Colors
-            colorArray[i] = Math.random() * 0.5 + 0.5; // R
-            colorArray[i+1] = Math.random() * 0.3; // G
-            colorArray[i+2] = Math.random() * 0.8 + 0.2; // B
+        // ----- CREATE A CUSTOM TRIANGLE SHAPE (for the storm effect) -----
+        function createTriangleShape() {
+            const shape = new THREE.Shape();
+            // Equilateral triangle pointing up
+            shape.moveTo(0, -1);      // top point
+            shape.lineTo(-0.866, 0.5); // bottom left
+            shape.lineTo(0.866, 0.5);  // bottom right
+            shape.closePath();
+            return shape;
         }
 
-        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-        particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
+        const triangleShape = createTriangleShape();
 
-        // Create cube geometry for particles
-        const particlesMaterial = new THREE.PointsMaterial({
-            size: 0.05,
+        // Configuration for triangle storm
+        const TRIANGLE_COUNT = 600; // Number of triangles
+        const COLORS = [
+            0xb464ff, // violet
+            0x64c8ff, // electric blue
+            0xff78c8, // pink
+            0x78ffc8, // mint
+            0xffc864  // amber
+        ];
+
+        // Create geometry from shape
+        const geometry = new THREE.ShapeGeometry(triangleShape);
+        
+        // Create many individual meshes for random properties
+        const triangleMeshes = [];
+        for (let i = 0; i < TRIANGLE_COUNT; i++) {
+            // Create material with random color and opacity
+            const color = COLORS[Math.floor(Math.random() * COLORS.length)];
+            const opacity = Math.random() * 0.5 + 0.3; // 0.3 to 0.8
+            const material = new THREE.MeshBasicMaterial({
+                color: color,
+                transparent: true,
+                opacity: opacity,
+                side: THREE.DoubleSide,
+                blending: THREE.AdditiveBlending // for glow effect
+            });
+
+            const mesh = new THREE.Mesh(geometry, material);
+            
+            // Random scale (size)
+            const scale = Math.random() * 1.5 + 0.5; // 0.5 to 2.0
+            mesh.scale.set(scale, scale, 1);
+            
+            // Random position in 3D space (spread throughout)
+            const radius = 30 + Math.random() * 70; // distance from center
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos((Math.random() * 2) - 1);
+            
+            mesh.position.x = radius * Math.sin(phi) * Math.cos(theta);
+            mesh.position.y = radius * Math.sin(phi) * Math.sin(theta);
+            mesh.position.z = radius * Math.cos(phi);
+            
+            // Random initial rotation
+            mesh.rotation.x = Math.random() * Math.PI * 2;
+            mesh.rotation.y = Math.random() * Math.PI * 2;
+            mesh.rotation.z = Math.random() * Math.PI * 2;
+            
+            // Store custom properties for animation
+            mesh.userData = {
+                speedX: (Math.random() - 0.5) * 0.01,
+                speedY: (Math.random() - 0.5) * 0.01,
+                speedZ: (Math.random() - 0.5) * 0.01,
+                driftSpeed: Math.random() * 0.02 + 0.005,
+                driftDirection: new THREE.Vector3(
+                    (Math.random() - 0.5) * 2,
+                    (Math.random() - 0.5) * 2,
+                    (Math.random() - 0.5) * 2
+                ).normalize()
+            };
+            
+            scene.add(mesh);
+            triangleMeshes.push(mesh);
+        }
+
+        // ----- ADD SOME STARS (keeping the original starfield for depth) -----
+        const starsGeometry = new THREE.BufferGeometry();
+        const starsCount = 1500; // reduced to not overpower triangles
+        const posArray = new Float32Array(starsCount * 3);
+        const colorArray = new Float32Array(starsCount * 3);
+
+        for(let i = 0; i < starsCount; i++) {
+            // Distribute stars farther away
+            const r = 100 + Math.random() * 200;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos((Math.random() * 2) - 1);
+            
+            const x = r * Math.sin(phi) * Math.cos(theta);
+            const y = r * Math.sin(phi) * Math.sin(theta);
+            const z = r * Math.cos(phi);
+            
+            posArray[i*3] = x;
+            posArray[i*3+1] = y;
+            posArray[i*3+2] = z;
+            
+            // Stars are mostly white/blue
+            let intensity = 0.5 + Math.random() * 0.5;
+            colorArray[i*3] = intensity;
+            colorArray[i*3+1] = intensity * 0.9;
+            colorArray[i*3+2] = intensity;
+        }
+
+        starsGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        starsGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
+
+        const starsMaterial = new THREE.PointsMaterial({
+            size: 0.2,
             vertexColors: true,
             transparent: true,
-            blending: THREE.AdditiveBlending
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+            sizeAttenuation: true
         });
 
-        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
-        scene.add(particlesMesh);
+        const starsMesh = new THREE.Points(starsGeometry, starsMaterial);
+        scene.add(starsMesh);
 
-        // Add some floating cubes
-        const cubesGroup = new THREE.Group();
-        const cubeCount = 20;
-
-        for(let i = 0; i < cubeCount; i++) {
-            const geometry = new THREE.BoxGeometry(0.3, 0.3, 0.3);
-            const material = new THREE.MeshStandardMaterial({
-                color: Math.random() * 0xffffff,
-                wireframe: true,
-                transparent: true,
-                opacity: 0.3
-            });
-            const cube = new THREE.Mesh(geometry, material);
-            
-            cube.position.x = (Math.random() - 0.5) * 20;
-            cube.position.y = (Math.random() - 0.5) * 20;
-            cube.position.z = (Math.random() - 0.5) * 20;
-            
-            cube.rotation.x = Math.random() * Math.PI;
-            cube.rotation.y = Math.random() * Math.PI;
-            
-            cubesGroup.add(cube);
-        }
-        scene.add(cubesGroup);
-
-        // Add ambient light
-        const ambientLight = new THREE.AmbientLight(0x404040);
-        scene.add(ambientLight);
-
-        // Add point lights
-        const light1 = new THREE.PointLight(0xff00ff, 1, 30);
-        light1.position.set(5, 5, 5);
-        scene.add(light1);
-
-        const light2 = new THREE.PointLight(0x00ffff, 1, 30);
-        light2.position.set(-5, -5, 5);
-        scene.add(light2);
-
-        camera.position.z = 15;
-
+        // camera position
+        camera.position.z = 30;
+        
         // Mouse interaction
         let mouseX = 0;
         let mouseY = 0;
+        let targetCameraX = 0;
+        let targetCameraY = 0;
 
         document.addEventListener('mousemove', (event) => {
             mouseX = (event.clientX / window.innerWidth - 0.5) * 2;
@@ -745,17 +800,48 @@
         function animate() {
             requestAnimationFrame(animate);
 
-            // Rotate particles based on mouse
-            particlesMesh.rotation.y += 0.0005;
-            particlesMesh.rotation.x += 0.0003;
-            
-            cubesGroup.rotation.y += 0.001;
-            cubesGroup.rotation.x += 0.0005;
+            // ----- ANIMATE TRIANGLES (Thunder/Storm Effect) -----
+            triangleMeshes.forEach(mesh => {
+                // Rotate each triangle independently
+                mesh.rotation.x += mesh.userData.speedX;
+                mesh.rotation.y += mesh.userData.speedY;
+                mesh.rotation.z += mesh.userData.speedZ;
+                
+                // Add slow drift in 3D space
+                mesh.position.x += mesh.userData.driftDirection.x * mesh.userData.driftSpeed;
+                mesh.position.y += mesh.userData.driftDirection.y * mesh.userData.driftSpeed;
+                mesh.position.z += mesh.userData.driftDirection.z * mesh.userData.driftSpeed;
+                
+                // Boundary check - if too far, bring back to center
+                const distance = mesh.position.length();
+                if (distance > 120) {
+                    // Reset to random inner position
+                    const radius = 20 + Math.random() * 40;
+                    const theta = Math.random() * Math.PI * 2;
+                    const phi = Math.acos((Math.random() * 2) - 1);
+                    mesh.position.x = radius * Math.sin(phi) * Math.cos(theta);
+                    mesh.position.y = radius * Math.sin(phi) * Math.sin(theta);
+                    mesh.position.z = radius * Math.cos(phi);
+                    
+                    // New drift direction
+                    mesh.userData.driftDirection = new THREE.Vector3(
+                        (Math.random() - 0.5) * 2,
+                        (Math.random() - 0.5) * 2,
+                        (Math.random() - 0.5) * 2
+                    ).normalize();
+                }
+            });
 
-            // Parallax effect based on mouse
-            camera.position.x += (mouseX * 2 - camera.position.x) * 0.05;
-            camera.position.y += (-mouseY * 2 - camera.position.y) * 0.05;
-            camera.lookAt(scene.position);
+            // Rotate stars slowly for background movement
+            starsMesh.rotation.y += 0.0001;
+            
+            // Smooth camera follow for parallax effect
+            targetCameraX += (mouseX * 3 - targetCameraX) * 0.02;
+            targetCameraY += (-mouseY * 2 - targetCameraY) * 0.02;
+            
+            camera.position.x += (targetCameraX - camera.position.x) * 0.05;
+            camera.position.y += (targetCameraY - camera.position.y) * 0.05;
+            camera.lookAt(0, 0, 0);
 
             renderer.render(scene, camera);
         }
@@ -790,27 +876,13 @@
         // Hover effects on interactive elements
         document.querySelectorAll('.interactive').forEach(el => {
             el.addEventListener('mouseenter', () => {
-                gsap.to(cursor, {
-                    scale: 1.5,
-                    duration: 0.3
-                });
-                gsap.to(cursorFollower, {
-                    scale: 1.5,
-                    duration: 0.3,
-                    borderColor: '#ff00ff'
-                });
+                gsap.to(cursor, { scale: 1.5, duration: 0.3 });
+                gsap.to(cursorFollower, { scale: 1.5, duration: 0.3, borderColor: '#ff00ff' });
             });
 
             el.addEventListener('mouseleave', () => {
-                gsap.to(cursor, {
-                    scale: 1,
-                    duration: 0.3
-                });
-                gsap.to(cursorFollower, {
-                    scale: 1,
-                    duration: 0.3,
-                    borderColor: 'rgba(255, 255, 255, 0.3)'
-                });
+                gsap.to(cursor, { scale: 1, duration: 0.3 });
+                gsap.to(cursorFollower, { scale: 1, duration: 0.3, borderColor: 'rgba(255, 255, 255, 0.3)' });
             });
         });
 
@@ -818,22 +890,11 @@
         gsap.registerPlugin(ScrollTrigger);
 
         // Timeline items animation
-        gsap.utils.toArray('.timeline-item').forEach((item, i) => {
+        gsap.utils.toArray('.timeline-item').forEach((item) => {
             gsap.fromTo(item, 
-                {
-                    opacity: 0,
-                    x: -50
-                },
-                {
-                    opacity: 1,
-                    x: 0,
-                    duration: 1,
-                    scrollTrigger: {
-                        trigger: item,
-                        start: 'top 80%',
-                        end: 'bottom 20%',
-                        toggleActions: 'play none none reverse'
-                    }
+                { opacity: 0, x: -50 },
+                { opacity: 1, x: 0, duration: 1,
+                  scrollTrigger: { trigger: item, start: 'top 80%', end: 'bottom 20%', toggleActions: 'play none none reverse' }
                 }
             );
         });
@@ -841,21 +902,9 @@
         // Floating cards animation
         gsap.utils.toArray('.floating-card').forEach((card, i) => {
             gsap.fromTo(card,
-                {
-                    opacity: 0,
-                    y: 50
-                },
-                {
-                    opacity: 1,
-                    y: 0,
-                    duration: 1,
-                    delay: i * 0.2,
-                    scrollTrigger: {
-                        trigger: card,
-                        start: 'top 80%',
-                        end: 'bottom 20%',
-                        toggleActions: 'play none none reverse'
-                    }
+                { opacity: 0, y: 50 },
+                { opacity: 1, y: 0, duration: 1, delay: i * 0.2,
+                  scrollTrigger: { trigger: card, start: 'top 80%', end: 'bottom 20%', toggleActions: 'play none none reverse' }
                 }
             );
         });
@@ -863,26 +912,14 @@
         // Stats animation
         gsap.utils.toArray('.stat-item').forEach((stat, i) => {
             gsap.fromTo(stat,
-                {
-                    opacity: 0,
-                    scale: 0.8
-                },
-                {
-                    opacity: 1,
-                    scale: 1,
-                    duration: 0.8,
-                    delay: i * 0.1,
-                    scrollTrigger: {
-                        trigger: stat,
-                        start: 'top 80%',
-                        end: 'bottom 20%',
-                        toggleActions: 'play none none reverse'
-                    }
+                { opacity: 0, scale: 0.8 },
+                { opacity: 1, scale: 1, duration: 0.8, delay: i * 0.1,
+                  scrollTrigger: { trigger: stat, start: 'top 80%', end: 'bottom 20%', toggleActions: 'play none none reverse' }
                 }
             );
         });
 
-        // ========== FLOATING PARTICLES BACKGROUND ==========
+        // ========== 2D FLOATING PARTICLES (extra sparkle) ==========
         function createParticle() {
             const particle = document.createElement('div');
             particle.className = 'particle';
@@ -894,15 +931,15 @@
             particle.style.left = Math.random() * 100 + '%';
             particle.style.top = Math.random() * 100 + '%';
             
-            particle.style.background = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`;
+            particle.style.background = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.6)`;
             
             document.body.appendChild(particle);
             
             gsap.to(particle, {
-                y: -100,
+                y: -150,
                 x: (Math.random() - 0.5) * 200,
                 opacity: 0,
-                duration: Math.random() * 3 + 2,
+                duration: Math.random() * 4 + 3,
                 onComplete: () => {
                     particle.remove();
                     createParticle();
@@ -911,7 +948,7 @@
         }
 
         // Create initial particles
-        for(let i = 0; i < 30; i++) {
+        for(let i = 0; i < 20; i++) {
             setTimeout(createParticle, Math.random() * 5000);
         }
 
@@ -938,9 +975,7 @@
                     height: '300px',
                     opacity: 0,
                     duration: 0.8,
-                    onComplete: () => {
-                        ripple.remove();
-                    }
+                    onComplete: () => { ripple.remove(); }
                 });
             });
         });
@@ -949,20 +984,9 @@
         window.addEventListener('scroll', () => {
             const scrolled = window.pageYOffset;
             
-            gsap.to('.parallax-section', {
-                y: scrolled * 0.3,
-                duration: 0.1
-            });
-            
-            gsap.to('.hero h1', {
-                y: scrolled * 0.2,
-                duration: 0.1
-            });
-            
-            gsap.to('.hero p', {
-                y: scrolled * 0.15,
-                duration: 0.1
-            });
+            gsap.to('.parallax-section', { y: scrolled * 0.3, duration: 0.1 });
+            gsap.to('.hero h1', { y: scrolled * 0.2, duration: 0.1 });
+            gsap.to('.hero p', { y: scrolled * 0.15, duration: 0.1 });
         });
 
         // ========== 3D TILT EFFECT ON CARDS ==========
@@ -978,30 +1002,17 @@
                 const rotateX = (y - centerY) / 10;
                 const rotateY = (centerX - x) / 10;
                 
-                gsap.to(card, {
-                    rotateX: rotateX,
-                    rotateY: rotateY,
-                    duration: 0.3,
-                    ease: 'power2.out'
-                });
+                gsap.to(card, { rotateX: rotateX, rotateY: rotateY, duration: 0.3, ease: 'power2.out' });
             });
             
             card.addEventListener('mouseleave', () => {
-                gsap.to(card, {
-                    rotateX: 0,
-                    rotateY: 0,
-                    duration: 0.5,
-                    ease: 'elastic.out(1, 0.3)'
-                });
+                gsap.to(card, { rotateX: 0, rotateY: 0, duration: 0.5, ease: 'elastic.out(1, 0.3)' });
             });
         });
 
         // ========== LOADING ANIMATION ==========
         window.addEventListener('load', () => {
-            gsap.to('body', {
-                opacity: 1,
-                duration: 1
-            });
+            gsap.to('body', { opacity: 1, duration: 1 });
         });
     </script>
 </body>
